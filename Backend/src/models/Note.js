@@ -12,6 +12,7 @@ const noteSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    userId: { type:mongoose.Schema.Types.ObjectId, ref:"user", required: true }, //store the note owner
 },
 { timestamps: true } //createdAt and updatedAt
 )

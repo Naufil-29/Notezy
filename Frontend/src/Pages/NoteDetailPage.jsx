@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router';
 import { useEffect } from 'react';
 import { toast } from 'react-hot-toast'
-import api from '../lib/axios.js'
+import api from '../lib/api.js';
 import { LoaderIcon, Trash2Icon } from 'lucide-react';
 import { Link } from 'react-router';
 import { ArrowLeftIcon } from 'lucide-react'

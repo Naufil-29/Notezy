@@ -1,10 +1,8 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { ArrowLeftIcon } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { toast } from 'react-hot-toast'
-import axios from 'axios'
-import api from  '../lib/axios.js'
+import api from "../lib/api.js"
 
 const CreatePage = () => {
   const [title, setTitle] = useState("");
@@ -15,36 +13,38 @@ const CreatePage = () => {
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
-      if(!title.trim() || !content.trim()){ 
-        toast.error("All feilds are required");
-        return;
+    if (!title.trim() || !content.trim()) { 
+      toast.error("All fields are required");
+      return;
+    }
+
+    console.log("Token in localStorage:", localStorage.getItem("token")); 
+    setLoading(true);
+
+    try {
+      const res = await api.post("/notes", { title, content });  // ✅ save response
+      console.log("📌 Response from backend:", res.data);
+
+      toast.success("Note created successfully");
+      navigate("/");
+    } catch (error) {
+      console.log("Error creating notes:", error.response?.data || error.message);
+
+      if (error.response?.status === 429) {  // ✅ safe check with ?
+        toast.error("Slow down, you are making notes too fast!", { 
+          duration: 4000,
+          icon: "💀",
+        });
+      } else if (error.response?.status === 401) {
+        toast.error("Unauthorized! Please login again.");
+        navigate("/login"); // optional redirect
+      } else {
+        toast.error("Failed to create note");
       }
-
-      setLoading(true)
-      try{ 
-          await api.post("/notes",{ 
-            title,
-            content
-          })
-
-          toast.success("Notes created sucessfully")
-          navigate("/")
-      }catch(error){ 
-          console.log("error creating notes", error)
-           if(error.response.status === 429){ 
-            toast.error("Slow down you are making notes too fast!", { 
-              duration:4000,
-              icon:"💀",
-            })
-
-           }else{ 
-             toast.error("Failed to create notes")
-           }
-      }finally{ 
-        setLoading(false)
-      }
+    } finally { 
+      setLoading(false);
+    }
   }
-
   return (
     <div className="min-h-screen w-full bg-base-200">  
       <div className="container mx-auto px-4 py-8"> 

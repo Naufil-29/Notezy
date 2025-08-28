@@ -2,7 +2,7 @@ import { PenSquare, PenSquareIcon, Trash2Icon } from 'lucide-react'
 import { Link } from 'react-router'
 import { formatDate } from '../lib/utils'
 import { toast } from 'react-hot-toast'
-import api from '../lib/axios.js'
+import api from '../lib/api.js'
 
 const NoteCard = ({note, setNotes}) => {
 

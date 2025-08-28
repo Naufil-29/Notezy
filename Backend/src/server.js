@@ -2,10 +2,11 @@ import express from 'express';
 import cors from "cors";
 import dotenv from 'dotenv';
 
-
+import authRoutes from './routes/authRoute.js'
 import notesRoutes from './routes/notesRoutes.js'
 import { connectDB } from './config/db.js';
 import rateLimiter from './middleware/rateLimiter.js';
+import { authMiddleware } from './middleware/auth.js';
 
 dotenv.config();
 
@@ -20,11 +21,8 @@ app.use(cors({
 app.use(express.json());// this middleware is used to parse JSON bodies
 app.use(rateLimiter);
 
-// app.use((req, res, next) => { 
-    //     console.log(`Req Method is: ${req.method} and Req URL is:${req.url}`);//this middleware logs the request method and URL
-    //     next();
-    // })
-    
+
+   app.use("/api/auth", authRoutes, authMiddleware)
     app.use("/api/notes", notesRoutes)
     
     
