@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-//1. Create a Schema
-//2. model basedoff of that Schema
 
 const noteSchema = mongoose.Schema({ 
     title:{ 
@@ -11,6 +9,11 @@ const noteSchema = mongoose.Schema({
     content:{ 
         type: String,
         required: true
+    },
+    tag:{ 
+        name:{type: String, default: ""},
+        color:{type: String, default: "#000000"} //default black
+
     },
     userId: { type:mongoose.Schema.Types.ObjectId, ref:"user", required: true }, //store the note owner
 },

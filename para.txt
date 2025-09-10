@@ -3,4 +3,19 @@ Mongodb-password = AmMzoZLMfefMxPHZ
 
 mongodb+srv://shaikhnaufil2908:AmMzoZLMfefMxPHZ@cluster0.uxi62dj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
+style={{
+                             backgroundColor: note.tag.color,
+                             color: "white",
+                             padding: "4px 8px",
+                             borderRadius: "6px",
+                             marginTop: "6px",
+                             display: "flex",
+                             width: "full",
+                             alignItems: "center"
+                          }}
 
+
+
+
+
+                          

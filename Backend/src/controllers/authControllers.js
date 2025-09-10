@@ -32,10 +32,11 @@ export async function authUser(req, res){
         if(!isMatch)return res.status(400).json({ message:"password is incorrect" });
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+       
 
         return res.json({ 
           token, 
-          user:{ id:user._id, username: user.username, email: user.email,  }
+          user:{ id:user._id, username: user.username, email: user.email,  },
         });
       }
 
@@ -48,7 +49,10 @@ export async function authUser(req, res){
     }catch(error){ 
         res.status(500).json({ message:error.message })
     }
-}
+};
+
+
+
 
 export const deleteUser = async (req, res) => {
   try {
@@ -65,4 +69,5 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 

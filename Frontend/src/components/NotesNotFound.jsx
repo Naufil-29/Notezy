@@ -1,6 +1,7 @@
 import React from 'react'
 import { NotebookIcon } from 'lucide-react'
 import { Link } from 'react-router'
+import { Button } from "../components/ui/button.tsx";
 
 const NotesNotFound = () => {
   return (
@@ -13,9 +14,9 @@ const NotesNotFound = () => {
         Ready to Orgainze your thoughts? Create your first note to start the journey.
         </p>
         <Link to="/create"> 
-        <button className='btn bg-primary'> 
+        <Button className='btn bg-primary'> 
         Create your first note
-        </button>
+        </Button>
         </Link>
     </div>
   )

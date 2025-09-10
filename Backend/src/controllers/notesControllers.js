@@ -18,16 +18,12 @@ export async function getNotesById(req, res){
         res.status(200).json(note);
 
     }catch(error){ 
-        console.log("Error in getNotesById controller:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
 export async function createANote(req, res) { 
     try { 
-        console.log("📌 Request body:", req.body);
-        console.log("📌 User from middleware:", req.user);
-
-        const { title, content } = req.body;
+        const { title, content, tag } = req.body;
         const userId = req.user.id; // JWT se aaya
 
         if (!title || !content) {
@@ -35,31 +31,50 @@ export async function createANote(req, res) {
         }
 
         // ✅ userId include karna hoga
-        const note = new Note({ title, content, userId });
+        const note = new Note({ 
+            title, 
+            content,
+            tag:{ 
+              name: tag?.name || "",
+              color: tag?.color || "#000000",
+            }, 
+            userId 
+        });
 
         const savedNote = await note.save();
         res.status(201).json(savedNote);
 
     } catch (error) { 
-        console.log("Error in createNote controller:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
 
 export async function updateNote(req, res) { 
-    try{ 
-        const { title, content } = req.body;
-        const updatedNote = await Note.findByIdAndUpdate(req.params.id, { title, content }, { new: true });
-        if (!updatedNote) {
-            return res.status(404).json({ message: "Note not found" });
-        };
+  try { 
+    const { id } = req.params; // ✅ get id from params
+    const { title, content, tag } = req.body;
 
-        res.status(200).json({updatedNote});
+    const updatedNote = await Note.findOneAndUpdate(
+      { _id: id, userId: req.user.id }, // ✅ ensure user owns the note
+      {
+        $set: {
+          title,
+          content,
+          ...(tag ? { tag: { name: tag.name, color: tag.color || 'defaultColor' } } : {}) 
+        }
+      },
+      { new: true } // ✅ return updated doc
+    );
+
+    if (!updatedNote) {
+      return res.status(404).json({ message: "Note not found" });
     }
-    catch(error){ 
-        console.log("Error in updateNote controller:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
+
+    res.status(200).json(updatedNote);
+  } catch (error) { 
+    console.error("Error in updateNote:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 export async function deleteNote(req, res) { 
@@ -72,7 +87,49 @@ export async function deleteNote(req, res) {
         res.status(200).json({ message: "Note deleted sucessfully" });
 
     }catch(error){ 
-        console.log("Error in deleteNote controller:", error);
         res.status(500).json({ message: "Internal server error" });
     }
+}
+
+export async function searchNotes(req, res) {
+  try {
+    const search = req.query.search || "";
+
+    //Auth middleware se Id aa rahi he
+    const userId = req.user.id;
+
+    if (!search) {
+      return res.status(400).json({ message: "Search query required" });
+    }
+
+    // MongoDB query
+    const query = {
+        userId,
+      $or: [
+        { title: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } },
+        { "tag.name": { $regex: search, $options: "i" } },
+      ],
+    };
+
+        // ✅ Check agar input ek valid date hai (yyyy-mm-dd)
+    const parsedDate = new Date(search);
+    if (!isNaN(parsedDate)) {
+      const startOfDay = new Date(parsedDate);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(parsedDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      query.$or.push({
+        createdAt: { $gte: startOfDay, $lte: endOfDay },
+      });
+    }
+
+    const notes = await Note.find(query);
+    res.json(notes);
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }

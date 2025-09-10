@@ -3,13 +3,30 @@ import { ArrowLeftIcon } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { toast } from 'react-hot-toast'
 import api from "../lib/api.js"
-
+import { Button } from "../components/ui/button.tsx";
+import { Input } from "../components/ui/input.tsx";
+import { Textarea } from "../components/ui/textarea.tsx";
+import { Card } from "../components/ui/card.tsx"
 const CreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const[tagName, setTagName] = useState("");  //for tag name
+  const[tagColor, setTagColor] = useState("#000000")  // for tag color 
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+    // 🟢 Define your palette here
+  const colors = [
+    "#FF5733", // Red-Orange
+    "#FFBD33", // Yellow
+    "#75FF33", // Green
+    "#33FFBD", // Aqua
+    "#3380FF", // Blue
+    "#9D33FF", // Purple
+    "#FF33A8", // Pink
+    "#808080"  // Gray
+  ];
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
@@ -18,15 +35,20 @@ const CreatePage = () => {
       return;
     }
 
-    console.log("Token in localStorage:", localStorage.getItem("token")); 
     setLoading(true);
 
     try {
-      const res = await api.post("/notes", { title, content });  // ✅ save response
-      console.log("📌 Response from backend:", res.data);
+      const res = await api.post("/notes", { 
+        title, 
+        content,
+        tag:{ 
+          name: tagName,
+          color: tagColor,
+        } 
+      });  // ✅ save response
 
+      navigate("/notes");
       toast.success("Note created successfully");
-      navigate("/");
     } catch (error) {
       console.log("Error creating notes:", error.response?.data || error.message);
 
@@ -49,38 +71,58 @@ const CreatePage = () => {
     <div className="min-h-screen w-full bg-base-200">  
       <div className="container mx-auto px-4 py-8"> 
         <div className="max-w-2xl mx-auto"> 
-          <Link to={"/"} className="btn btn-ghost mb-6"> 
+          <Button className='mb-5'>
+          <Link to={"/notes"} className="flex items-center"> 
             <ArrowLeftIcon className="size-5"/>
             Back To Notes
           </Link>
-          <div className="card bg-base-100"> 
+          </Button>
+          <Card className="card bg-base-100"> 
             <div className="card-body"> 
               <h2 className="card-title text-2xl mb-4"> </h2>
               <form onSubmit={handleSubmit}> 
-                <div className="form-control mb-4"> 
-                  <label className="label">
-                  <span className="label-text">Title</span>
-                  </label>
-                  <input type="text" placeholder='Title' className='input input-bordered' value={title} onChange={(e) => setTitle(e.target.value)}/>
+                <div className="p-4 w-full mb-4"> 
+                 <h2 className="ml-5 font-bold">Title</h2>
+                 <Input type="text" placeholder='Title' className='' value={title} onChange={(e) => setTitle(e.target.value)}/>
                 </div>
 
-                <div className='form-control mb-5'> 
-                  <label className='label'> 
-                    <span className='label-text'>Content</span>
-                  </label>
-                  <textarea placeholder='Write your note here' className='textarea textarea-bordered h-32' value={content} onChange={(e) => setContent(e.target.value)} />
+                <div className='p-4 w-full mb-4'> 
+                  <h2 className="ml-5 font-bold">Content</h2>
+                  <Textarea placeholder='Write your note here' className='textarea textarea-bordered h-32' value={content} onChange={(e) => setContent(e.target.value)} />
+                </div>
+
+                <div className='p-4 w-full mb-4'> 
+                  <h2 className="ml-5 font-bold">Tag Name</h2>
+                  <Textarea placeholder='e.g : Work, Personal' className='textarea textarea-bordered h-32' value={tagName} onChange={(e) => setTagName(e.target.value)} />
+                </div>
+
+                 <div className="p-4 w-full mb-4"> 
+                  <h2 className="ml-5 font-bold">Tag color</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {colors.map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        className={`w-8 h-8 rounded-full border-2 transition ${
+                          tagColor === c ? "border-black scale-110" : "border-transparent"
+                        }`}
+                        style={{ backgroundColor: c }}
+                        onClick={() => setTagColor(c)}
+                      />
+                    ))}
+                  </div>
                 </div>
 
 
-                <div className='card-actions justify-end'> 
-                  <button type='submit' className='btn btn-primary' disabled={loading}> 
+            <div className='card-actions justify-end'> 
+                  <Button type='submit' className='ml-5 mb-5' disabled={loading}> 
                     {loading ? "creating..." : "Create Note"}
-                  </button>
+                  </Button>
                 </div>
 
               </form>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </div> 

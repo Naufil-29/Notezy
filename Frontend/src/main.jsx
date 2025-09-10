@@ -4,12 +4,15 @@ import './index.css';
 import App from './App.jsx';
 import { BrowserRouter } from 'react-router';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from './components/theme-Provider.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter> 
+    <ThemeProvider>
+     <BrowserRouter> 
       <App />
       <Toaster />
-    </BrowserRouter>    
+     </BrowserRouter>
+    </ThemeProvider>    
   </StrictMode>,
 )

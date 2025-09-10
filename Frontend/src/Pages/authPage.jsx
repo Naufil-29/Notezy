@@ -1,19 +1,29 @@
-import react , { useState } from "react";
+
 import { data, useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
+import { useTheme } from "next-themes"
 import axios from "axios";
+import React from 'react'
+import { PlusIcon } from 'lucide-react'
+import { Link } from "react-router";
+import { useEffect, useState } from 'react';
+import { Sun, Moon } from 'lucide-react';
+import { Textarea } from "../components/ui/textarea.tsx";
+import { Card } from "../components/ui/card.tsx"
+import  { Button } from '../components/ui/button.tsx' 
+import { Input } from "../components/ui/input.tsx";
 
 const AuthPage = () => { 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
 
     const [isRegister, setIsRegister] = useState(false); // Login/Register
     const [formData, setFormData] = useState({ 
-        username: "",
-        email: "",
-        password: "",
+      username: "",
+      email: "",
+      password: "",
     })
  
-
 //handle input changes
 
 const handleChange = (e) => { 
@@ -40,13 +50,13 @@ const handleSubmit = async (e) => {
     if (res.ok) {
       if (isRegister) {
         // ✅ If user just registered
-        toast.success("Account created successfully! Please login.");
         setIsRegister(false); // switch to login form
+        toast.success("Account created successfully! Please login.");
       } else {
         // ✅ If user logged in
-        toast.success("Login successful!");
         localStorage.setItem("token", data.token); // save token
         navigate("/notes"); // go to notes page
+        toast.success("Login successful!");
       }
     } else {
       toast.error(data.message || "Something went wrong");
@@ -55,28 +65,67 @@ const handleSubmit = async (e) => {
     console.error(error);
     toast.error("Server error. Try again later.");
   }
+
+  
+  
 };
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+    if (!mounted) return null 
+
 
 return( 
 
-    <div className="flex items-center justify-center min-h-screen bg-gray-100"> 
-        <div className="card-w[400px] bg-white shadow-xl p-6"> 
-            <h2 className="text-2xl font-bold mb-4 text-center"> 
+  <div> 
+
+    <header className="bg-base-300 border-b border-base-content/10">
+      <div className="mx-auto max-w-6xl p-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-yellow font-bolder text-outline tracking-tight">Notezy</h1>
+       
+              <Button
+                  className="bg-gray-200"
+                  onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                  variant="outline"
+                   size="icon">
+    
+                   {theme === "light" ? (
+                   <Sun className="w-5 h-5" />
+                    ) : (
+                     <Moon className="w-5 h-5" />
+                     )}
+                  </Button>
+        </div>
+        </div> 
+    </header>
+
+
+    <div className="flex items-center justify-center min-h-screen bg-base-100"> 
+       
+        <Card className="w-1/3 bg-base-200 shadow-xl p-6"> 
+            <h2 className="text-2xl font-bold mb-4 text-center text-blue-600"> 
                 {isRegister ? "Register": "Login"}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4"> 
-                {isRegister && ( <input type="text" name="username" placeholder="Username" className="input input-bordered w-full" onChange={handleChange} required /> )}
-                <input type="email" name="email" placeholder="Email" className="input input-bordered w-full" onChange={handleChange} required />     
-                <input type="password" name="password" placeholder="Password" className="input input-bordered w-full" onChange={handleChange} required />     
-                <button type="submit" className="btn w-full bg-black text-white">{isRegister ? "Register": "Login"} </button>
+                {isRegister && ( <Input type="text" name="username" placeholder="Username" className="input input-bordered w-full bg-base-100 text-black" onChange={handleChange} required /> )}
+                <Input type="email" name="email" placeholder="Email" className="input input-bordered bg-base-100 w-full text-black" onChange={handleChange} required />     
+                <Input type="password" name="password" placeholder="Password" className="input input-bordered bg-base-100 w-full text-black" onChange={handleChange} required />     
+                <Button type="submit" className=" w-full">{isRegister ? "Register": "Login"} </Button>
             </form> 
 
             <p className="mt-4 text-center"> 
                 {isRegister ? "Already have an account" : "Don't have an account"}{" "}
-                <button type="button" className="text-blue-500 underline" onClick={() => setIsRegister(!isRegister)}>{isRegister ? "Login here" : "Register here"}</button> 
+                <Button type="button" className="btn btn-xs text-blue-500" onClick={() => setIsRegister(!isRegister)}>{isRegister ? "Login here" : "Register here"}</Button> 
             </p>
-        </div>
+        </Card>
+    
     </div>
+   </div> 
 
 )
 };

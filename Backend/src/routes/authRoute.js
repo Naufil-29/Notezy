@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { authUser,deleteUser  } from '../controllers/authControllers.js'
+import { authUser,  deleteUser  } from '../controllers/authControllers.js'
 
 const router = express.Router()
 

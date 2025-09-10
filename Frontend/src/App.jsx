@@ -10,7 +10,7 @@ const App = () => {
 
 
   return (
-    <div data-themes="bumble-bee"> 
+    <div data-themes="light"> 
     
       <Routes> 
         {/* Default route → if logged in go to notes, else go to auth */}

@@ -6,40 +6,84 @@ import { toast } from 'react-hot-toast'
 import NoteCard from '../components/NoteCard'
 import api from "../lib/api.js"
 import NotesNotFound from '../components/NotesNotFound.jsx'
+import ProfileBar from '../components/ProfileBar.jsx'
+import ChatBox from '../components/OpenAI.jsx'
+import { Button } from "../components/ui/button.tsx";
+import { Input } from "../components/ui/input.tsx";
+import { Textarea } from "../components/ui/textarea.tsx";
 
 const HomePage = () => {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { 
-    const fetchNotes = async () => { 
-      try{ 
-        const res = await api.get("/notes")
-        console.log(res.data)
-        setNotes(res.data)
-        setIsRateLimited(false)
+  const [search, setSearch] = useState("");                              // 12) Search text
+  const [typingTimeout, setTypingTimeout] = useState(null);              // 13) Debounce handle
+
+  // 14) Notes fetch function (all ya filtered)
+  const fetchNotes = async (query = "") => { 
+    try { 
+      setLoading(true);                                                  // 15) spinner on
+      const url = query 
+        ? `/notes/search?search=${encodeURIComponent(query)}`            // 16) search API
+        : `/notes`;                                                      // 17) all notes
+
+      const res = await api.get(url);                                    // 18) GET call
+      setNotes(res.data);                                                // 19) state update
+      setIsRateLimited(false);                                           // 20) RL false
+    } catch (error) { 
+      console.log("Error fetching notes", error);                        // 21) log
+      if (error?.response?.status === 429) {                             // 22) RL?
+        setIsRateLimited(true);                                          // 23) RL show
+      } else { 
+        toast.error(error?.response?.data?.error || "Error fetching notes"); // 24) toast
       }
-      catch(error){ 
-          console.log("Error fetching notes");
-          if(error.response.status === 429){ 
-            setIsRateLimited(true)
-          }else{ 
-            toast.error("Error fetchin notes")
-          }
-      }finally{ 
-        setLoading(false)
-      }
-    };
-    fetchNotes();
+    } finally { 
+      setLoading(false);                                                 // 25) spinner off
+    }
+  };
+
+  useEffect(() => {                                                      // 26) on mount
+    fetchNotes();                                                        // 27) load all
   }, []);
+
+  // 28) Live search (debounced)
+  const handleSearch = (e) => {
+    const value = e.target.value;                                        // 29) input value
+    setSearch(value);                                                    // 30) state update
+
+    if (typingTimeout) clearTimeout(typingTimeout);                      // 31) old timeout clear
+
+    // 32) 500ms ke baad query fire
+    const t = setTimeout(() => {                                         // 33) new timeout
+      fetchNotes(value)                                                 // 34) call API
+    }, 500);
+    setTypingTimeout(t);                                                 // 35) store handle
+  };
   return (
-    <div className="min-h-screen bg-base-300"> 
+    <div className="min-h-screen bg-base-300 scrollbar-hidden"> 
       <Navbar />
+
+      <div className='flex bg-basse-300'>
+
+        <ProfileBar />
 
       {isRateLimited && <RateLimitedUI  />}
 
-      <div className="max-w-7xl mx-auto  p-4 mt-6"> 
+
+
+      <div className="w-1/2 mx-auto h-screen overflow-x-auto scrollbar-hide p-4 mt-6"> 
+           {/* 🔍 Search Bar */}
+        <div className="mb-6">                                           {/* 39) container */}
+          <Textarea
+            type="text"
+            placeholder="Search any note..."
+            value={search}                                               // 40) controlled input
+            onChange={handleSearch}                                      // 41) live search
+            className="input input-lg p-6 w-full rounded-lg "                      // 42) styling
+          />
+        </div>
+
         {loading && <div className="text-center font-bold tracking-tight text-black-900 py-10">loading notes...</div>}
 
         {notes.length === 0 && !isRateLimited && <NotesNotFound />}
@@ -51,8 +95,10 @@ const HomePage = () => {
             ))}
           </div>
         )}
+        
       </div>
-
+      <ChatBox onNewNote={fetchNotes}/>    {/* ✅ Pass refresher function */}
+    </div>
 
     </div>
   )

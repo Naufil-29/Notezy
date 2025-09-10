@@ -14,6 +14,14 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true,
     }, 
+    profileImg:{ 
+        type:String,
+        default:"",
+    },
+    description:{ 
+        type:String,
+        default:"",
+    }
     
     
 },{ 
