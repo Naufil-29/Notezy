@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 5001;
 
 //middlewares
 app.use(cors({ 
-    origin: "http://localhost:5173"
+    origin: "https://notezy-frontend-sz5x.onrender.com"
 }))
 // make uploads folder public
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
