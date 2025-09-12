@@ -1,5 +1,5 @@
 
-import { data, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 import { useTheme } from "next-themes"
 import axios from "axios";
@@ -44,7 +44,7 @@ const handleSubmit = async (e) => {
     console.log(res.data)
     const data = res.data;
 
-    if (res.ok) {
+    if (res.status === 200) {
       if (isRegister) {
         // ✅ If user just registered
         setIsRegister(false); // switch to login form
