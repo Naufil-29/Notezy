@@ -130,7 +130,7 @@ const ProfileBar = () => {
             previewImg
               ? previewImg
               : user?.profileImg
-                ? `http://localhost:5001${user.profileImg}`
+                ? `${import.meta.env.VITE_BACKEND_URL}/uploads/${user.profileImg}`
                 : defaultImg
           }
           alt="profile"
