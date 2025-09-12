@@ -130,7 +130,7 @@ const ProfileBar = () => {
             previewImg
               ? previewImg
               : user?.profileImg
-                ? `https://notezy-backend-lz8r.onrender.com/uploads/${user.profileImg}`
+                ? `https://notezy-backend-lz8r.onrender.com${user.profileImg}`
                 : defaultImg
           }
           alt="profile"
