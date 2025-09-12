@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import defaultImg from "../asset-img/default-img.jpg"
 import { toast } from 'react-hot-toast'
 import api from "../lib/api.js"
@@ -33,9 +32,10 @@ const ProfileBar = () => {
       const url = query
         ? `/api/notes/search?search=${encodeURIComponent(query)}`            // 16) search API
         : `/api/notes`;                                                      // 17) all notes
-
-      const res = await api.get(url {
-        
+        const token = localStorage.getItem("token")
+      
+      const res = await api.get(url, {
+        headers: { Authorization: `Bearer ${token}` }
       });                                    // 18) GET call
       setNotes(res.data);                                                // 19) state update
       // 20) RL false
@@ -47,9 +47,7 @@ const ProfileBar = () => {
   const fetchProfile = async () => {
     try {
 
-      const res = await axios.get("http://localhost:5001/api/user/me", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const res = await api.get("/api/user/me");
       setUser(res.data);
       setUsername(res.data.username || "");
       setDescription(res.data.description || "");
@@ -99,7 +97,7 @@ const ProfileBar = () => {
     }
 
     try {
-      const res = await axios.put("http://localhost:5001/api/user/update", formData, {
+      const res = await api.put("/api/user/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
