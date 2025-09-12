@@ -17,10 +17,8 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 
-//middlewares
-app.use(cors({ 
-    origin: "http://localhost:5173"
-}))
+// Allow frontend requests from deployed URL
+app.use(cors({ origin: process.env.FRONTEND_URL || "*" }));
 // make uploads folder public
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(express.json());// this middleware is used to parse JSON bodies
