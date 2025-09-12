@@ -25,10 +25,14 @@ const HomePage = () => {
     try { 
       setLoading(true);                                                  // 15) spinner on
       const url = query 
-        ? `/notes/search?search=${encodeURIComponent(query)}`            // 16) search API
-        : `/notes`;                                                      // 17) all notes
+        ? `/api/notes/search?search=${encodeURIComponent(query)}`            // 16) search API
+        : `/api/notes`;  // 17) all notes
 
-      const res = await api.get(url);                                    // 18) GET call
+        const token = localStorage.getItem("token")
+      
+      const res = await api.get(url, {
+        headers: { Authorization: `Bearer ${token}` }
+      });                                    // 18) GET call
       setNotes(res.data);                                                // 19) state update
       setIsRateLimited(false);                                           // 20) RL false
     } catch (error) { 
