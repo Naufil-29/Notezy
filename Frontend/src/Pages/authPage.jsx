@@ -37,7 +37,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await api.post("/auth", {
+    const res = await api.post("/api/auth", {
         ...formData,
         action: isRegister ? "register" : "login",
       })
