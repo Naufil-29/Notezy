@@ -12,6 +12,7 @@ import { Textarea } from "../components/ui/textarea.tsx";
 import { Card } from "../components/ui/card.tsx"
 import  { Button } from '../components/ui/button.tsx' 
 import { Input } from "../components/ui/input.tsx";
+import api from "../lib/api.js"
 
 const AuthPage = () => { 
   const navigate = useNavigate();
@@ -39,8 +40,7 @@ const handleSubmit = async (e) => {
     const res = await api.post("/auth", {
         ...formData,
         action: isRegister ? "register" : "login",
-      }),
-    };
+      })
     console.log(res.data)
     const data = await res.json();
 
