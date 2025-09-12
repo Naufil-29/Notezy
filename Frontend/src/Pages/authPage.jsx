@@ -36,14 +36,12 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await fetch("/api/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    const res = await api.post("/auth", {
         ...formData,
         action: isRegister ? "register" : "login",
       }),
-    });
+      console.log(res.data)
+    };
 
     const data = await res.json();
 
