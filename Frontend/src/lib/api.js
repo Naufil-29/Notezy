@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://notezy-backend-lz8r.onrender.com"
+  baseURL: "https://notezy-backend-lz8r.onrender.com/api"
 });
 
 // Add token to every request if exists // Attach token automatically (for future protected calls)
