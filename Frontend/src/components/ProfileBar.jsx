@@ -130,7 +130,7 @@ const ProfileBar = () => {
             previewImg
               ? previewImg
               : user?.profileImg
-                ? `${import.meta.env.VITE_BACKEND_URL}/uploads/${user.profileImg}`
+                ? `https://notezy-backend-lz8r.onrender.com/uploads/${user.profileImg}`
                 : defaultImg
           }
           alt="profile"
