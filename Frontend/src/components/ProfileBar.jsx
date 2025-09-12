@@ -31,10 +31,12 @@ const ProfileBar = () => {
     try {
       setLoading(true);                                                  // 15) spinner on
       const url = query
-        ? `/notes/search?search=${encodeURIComponent(query)}`            // 16) search API
-        : `/notes`;                                                      // 17) all notes
+        ? `/api/notes/search?search=${encodeURIComponent(query)}`            // 16) search API
+        : `/api/notes`;                                                      // 17) all notes
 
-      const res = await api.get(url);                                    // 18) GET call
+      const res = await api.get(url {
+        
+      });                                    // 18) GET call
       setNotes(res.data);                                                // 19) state update
       // 20) RL false
     } catch (error) {
