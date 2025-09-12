@@ -42,7 +42,7 @@ const handleSubmit = async (e) => {
         action: isRegister ? "register" : "login",
       })
     console.log(res.data)
-    const data = await res.json();
+    const data = res.data;
 
     if (res.ok) {
       if (isRegister) {
