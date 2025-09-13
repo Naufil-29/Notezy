@@ -15,7 +15,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token")
-    window.location.href = "/auth"
+    window.location.href = "/api/auth"
   }
 
   if (!mounted) return null // avoid hydration mismatch
