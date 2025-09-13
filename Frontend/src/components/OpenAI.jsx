@@ -19,32 +19,23 @@ const handleSend = async () => {
   const userInput = input;
   setInput("");
 
-  try {
+try {
+  const res = await api.post("/api/chat", {
+    message: userInput,
+  });
 
-    const res = await api.post("/api/chat",{
-      message: userInput,
-      )};
+  const data = res.data;
 
-    if(!res.ok){ 
-      throw new Error("Failed to fetch");
-    }
+  const botMessage = { text: data.reply, sender: "bot" };
+  setMessages((prev) => [...prev, botMessage]);
 
-    const data = res.data;
-
-    // Bot reply
-    const botMessage = { text: data.reply, sender: "bot" };
-    setMessages((prev) => [...prev, botMessage]);
-
-    // If AI created a note, update frontend notes list (if you have state for it)
-    if (data.note) {
-      // You can call setNotes([...notes, data.note]) if notes are in parent component
-      console.log("New note created:", data.note);
-      onNewNote();
-    }
-  } catch (err) {
-    console.error(err);
+  if (data.note) {
+    console.log("New note created:", data.note);
+    onNewNote();
   }
-};
+} catch (err) {
+  console.error("Chat error:", err);
+}
 
   return (
     <div className="chatbox border-x-2 w-[400px] p-4">
