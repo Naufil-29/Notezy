@@ -67,7 +67,7 @@ const handleDelete = async () => {
         if(!window.confirm("Are you sure you want to delete this note")) return;
 
         try{ 
-            await api.delete(`/notes/${id}`)
+            await api.delete(`/api/notes/${id}`)
             toast.success("Note deleted sucessfully!")
             navigate("/notes")
         }catch(error){ 
@@ -84,7 +84,7 @@ const handleDelete = async () => {
     setSaving(true)
 
     try{ 
-        await api.put(`notes/${id}`, note)
+        await api.put(`/api/notes/${id}`, note)
         toast.success("Note updated successfully")
         navigate("/notes")
     }catch(error){ 
