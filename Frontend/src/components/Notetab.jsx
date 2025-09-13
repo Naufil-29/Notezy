@@ -16,7 +16,7 @@ const Notetab = ({note, setNotes}) => {
         if(!window.confirm("Are you sure you want to delete this note")) return;
 
         try{ 
-            await api.delete(`/notes/${id}`)
+            await api.delete(`/api/notes/${id}`)
             setNotes((prev) => prev.filter((note) => note._id !== id)) //get rid of the deleted notes
             toast.success("Note deleted sucessfully!")
         }catch(error){ 
