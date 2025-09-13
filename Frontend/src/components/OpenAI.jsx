@@ -21,22 +21,15 @@ const handleSend = async () => {
 
   try {
 
-    const res = await fetch("http://localhost:5001/api/chat/", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`, //attach token
-       },
-      body: JSON.stringify({
-        message: userInput,
-      }),
-    });
+    const res = await api.post("/api/chat",{
+      message: userInput,
+      )};
 
     if(!res.ok){ 
       throw new Error("Failed to fetch");
     }
 
-    const data = await res.json();
+    const data = res.data;
 
     // Bot reply
     const botMessage = { text: data.reply, sender: "bot" };
